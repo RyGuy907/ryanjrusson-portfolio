@@ -1,0 +1,270 @@
+/* Wordle demo island styles. Self-contained per spec section 12 rule 4 —
+   imported by mount.ts, never by the shared bundle. */
+
+.wd {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--surface);
+  padding: clamp(1rem, 3vw, 1.75rem);
+}
+
+.wd-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+}
+
+.wd button {
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+
+.wd button:hover {
+  border-color: var(--matched);
+}
+
+.wd button[aria-pressed='true'] {
+  border-color: var(--matched);
+  color: var(--matched-text);
+}
+
+.wd button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.wd-status {
+  margin-top: 0.9rem;
+  font-size: var(--step--1);
+  color: var(--muted);
+  min-height: 1.5em;
+  max-width: none;
+}
+
+.wd-secret {
+  color: var(--matched-text);
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.wd-agents {
+  margin-top: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+@media (max-width: 700px) {
+  .wd-agents {
+    grid-template-columns: 1fr;
+  }
+}
+
+.wd-agent {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 1rem;
+}
+
+.wd-agent-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 0.6rem;
+}
+
+.wd-agent-desc {
+  font-size: var(--step--1);
+  color: var(--muted);
+  margin-top: 0.6rem;
+  max-width: none;
+}
+
+.wd-count {
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  color: var(--pending-text);
+}
+
+.wd-count[data-solved] {
+  color: var(--matched-text);
+}
+
+.wd-board {
+  margin-top: 0.9rem;
+  display: grid;
+  gap: 0.3rem;
+}
+
+.wd-row {
+  display: flex;
+  gap: 0.3rem;
+}
+
+.wd-tile {
+  width: 2.4rem;
+  height: 2.4rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  text-transform: uppercase;
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.wd-tile[data-fb='0'] {
+  background: color-mix(in srgb, var(--muted) 18%, var(--surface));
+  color: var(--muted);
+}
+
+.wd-tile[data-fb='1'] {
+  background: color-mix(in srgb, var(--pending) 22%, var(--surface));
+  color: var(--pending-text);
+  border-color: var(--pending);
+}
+
+.wd-tile[data-fb='2'] {
+  background: color-mix(in srgb, var(--matched) 22%, var(--surface));
+  color: var(--matched-text);
+  border-color: var(--matched);
+}
+
+/* clickable proposal tiles (manual mode) */
+button.wd-tile {
+  cursor: pointer;
+  padding: 0;
+}
+
+button.wd-tile:hover {
+  border-color: var(--ink);
+}
+
+.wd-row-actions {
+  margin-top: 0.6rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.wd-top {
+  margin-top: 1rem;
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--step--1);
+}
+
+.wd-top caption {
+  text-align: left;
+  padding-bottom: 0.35rem;
+}
+
+.wd-top th {
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  color: var(--muted);
+  border-bottom: 1px solid var(--rule);
+  padding: 0.2rem 0.5rem 0.3rem 0;
+}
+
+.wd-top td {
+  padding: 0.25rem 0.5rem 0.25rem 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 40%, transparent);
+  font-variant-numeric: tabular-nums;
+}
+
+.wd-top .wd-word {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+}
+
+.wd-top tr[data-chosen] .wd-word {
+  color: var(--matched-text);
+}
+
+.wd-searching {
+  font-family: var(--font-mono);
+  font-size: var(--label-size);
+  color: var(--pending-text);
+  text-transform: uppercase;
+}
+
+.wd-word-form {
+  margin-top: 0.75rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.wd-word-form[hidden] {
+  display: none;
+}
+
+.wd-input {
+  font-family: var(--font-mono);
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  width: 8.5rem;
+  padding: 0.4rem 0.6rem;
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+}
+
+/* The primary action — filled, so it reads as a submit rather than another
+   mode toggle. */
+.wd .wd-solve {
+  background: var(--matched);
+  color: var(--surface);
+  border-color: var(--matched);
+}
+
+.wd .wd-solve:hover {
+  background: var(--matched-text);
+  border-color: var(--matched-text);
+}
+
+/* Rejected word: red border plus a short nudge, so the failure is visible
+   without having to read the status line. */
+.wd-input[data-invalid] {
+  border-color: #a33a2e;
+  box-shadow: 0 0 0 1px #a33a2e;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wd-input[data-invalid] {
+    animation: wd-shake 220ms ease-in-out;
+  }
+}
+
+@keyframes wd-shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.wd-input::placeholder {
+  color: var(--muted);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: var(--label-size);
+}

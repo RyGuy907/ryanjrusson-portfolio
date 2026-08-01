@@ -1,0 +1,99 @@
+---
+layout: ../../layouts/DeepDive.astro
+title: 'Wordle, two ways'
+description: 'Two agents solving Wordle from a shared Bayes-filter belief state — risk-neutral vs risk-averse — benchmarked over every possible answer, with a live demo.'
+context: 'Self-directed final project · Academic'
+demoHref: '#try-it'
+backHref: '/#wordle'
+---
+
+import GuessChart from '../../components/GuessChart.astro';
+import WordleDemo from '../../demos/wordle/WordleDemo.astro';
+
+Wordle gives you six guesses to find a five-letter word, with feedback for each letter
+after each guess: green (right letter, right spot), yellow (right letter, wrong
+spot), gray (not in the word). There are 2,315 possible answers.
+
+Formally, this is a partially observable problem. The hidden state is the answer,
+each color pattern is an observation, and the set of answers still consistent with
+everything observed so far is the belief state. A **Bayes filter** maintains that
+belief; after each guess, a word survives only if it would have produced exactly 
+the feedback seen. The filter starts at 2,315 words and collapses from there.
+
+This project builds two agents on that shared filter. They differ only in how they
+choose the next word to guess.
+
+## Two ways to pick a candidate
+
+Both agents evaluate a guess the same way: bucket the remaining answers
+by the feedback pattern each would produce. A guess that splits the answers into
+many small buckets is a good one, because few candidates will remain for whatever
+comes back. A guess that leaves one big bucket is a bad, for the opposite reason. 
+The agents differ only in how they judge the buckets:
+
+**The entropy agent is risk-neutral.** It treats the bucket sizes as a probability
+distribution and picks the guess with the highest Shannon entropy — the most
+informative question *on average*, assuming the answer was drawn at random.
+
+**The second agent is risk-averse.** It looks only at each guess's largest bucket —
+the worst case — and picks the guess whose largest bucket is smallest. It is
+minimax in nature: it gives up some performance on average to ensure no feedback
+pattern ever results in a large group of candidates.
+
+## The opening guess
+
+Every game starts from the same belief state, so the first guess is the same
+every time. Each agent computes its own:
+
+| Agent | Opener | Expected bits | Worst-case bucket | Could it be the answer? |
+|---|---|---|---|---|
+| Entropy | `soare` | 5.886 | 183 | no |
+| Risk-averse | `arise` | 5.821 | 168 | yes |
+
+`soare` (a young hawk) is not in the answer list at all. The entropy agent spends 
+the first turn purely on information. The risk-averse agent takes a different
+approach: four words tie for the best worst case (168 candidates), and
+it takes the one that is also a legal answer.
+
+Because the opener is deterministic, it is computed offline once and committed as
+a constant — scoring 12,972 candidate guesses against all 2,315 answers live
+would cost seconds and produce the same word every time.
+
+## Head to head
+
+Both agents solve every one of the 2,315 possible answers, guessing from the full
+12,972-word allowed list:
+
+<GuessChart />
+
+Neither agent ever loses. **The entropy agent is better on average — 3.53 guesses
+to 3.60 — but the risk-averse agent never needs more than 5, while entropy requires
+6 exactly once.** Each agent is optimal at what it was designed for, and compromises
+on the other.
+
+The single word that costs the entropy agent a sixth guess is `waver`. It is part of 
+a large one-letter-swap family (*waver, wafer, water, wager, waxer…*), the kind of 
+large bucket situation the risk-averse agent was designed never to walk into.
+
+Against a human baseline — five random games, played blind and then re-run through
+both agents — the agents matched or beat the human on every word, and the human
+lost one game outright (`humph`). A typical human average sits around 4–5 guesses;
+the agents' is under 3.6.
+
+## Try it
+
+Think of a five-letter word or let the agents race on a random word. The candidate 
+count next to each agent is the belief state;
+watch it collapse from 2,315 to 1.
+
+<WordleDemo />
+
+## Implementation notes
+
+- The in-browser agents are a TypeScript port of the original Python, running in a
+  **Web Worker**. It has the same Bayes filter and same bucket scoring. 
+  Feedback patterns are base-3 integers (3⁵ = 243 per guess).
+- The original project precomputes the full 12,972 × 2,315 guess-by-answer pattern
+  table. The port skips the table: with the **opening guess
+  precomputed**, every later turn faces a candidate set small enough to score in
+  milliseconds.

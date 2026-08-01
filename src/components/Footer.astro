@@ -1,0 +1,73 @@
+---
+import { heroLinks } from '../data/site';
+
+const footerLinks = heroLinks.filter((l) => l.label !== 'Resume (PDF)');
+---
+
+<footer class="footer">
+  <div class="container inner">
+    <ul>
+      {
+        footerLinks.map((link) => {
+          const newTab = link.href.startsWith('http') || link.href.endsWith('.pdf');
+          return (
+            <li>
+              <a
+                href={link.href}
+                target={newTab ? '_blank' : undefined}
+                rel={newTab ? 'noopener' : undefined}
+              >
+                {link.label}
+              </a>
+              {link.todo && <span class="todo-chip">TODO</span>}
+            </li>
+          );
+        })
+      }
+    </ul>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--band);
+    margin-top: clamp(3rem, 8vh, 5rem);
+  }
+
+  .inner {
+    padding-block: 1.75rem;
+  }
+
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  a {
+    font-family: var(--font-mono);
+    font-size: var(--label-size);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    text-decoration: none;
+    color: var(--paper);
+    border-bottom: 1px solid #34608c;
+  }
+
+  a:hover {
+    border-bottom-color: #6fae9c;
+  }
+
+  /* the site-wide green outline is too dark against the navy band */
+  a:focus-visible {
+    outline-color: #6fae9c;
+  }
+</style>

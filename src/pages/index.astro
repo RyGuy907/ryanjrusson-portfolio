@@ -1,0 +1,280 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import Footer from '../components/Footer.astro';
+import { projects, alsoBuilt } from '../data/projects';
+import { experience, about, skills, interests } from '../data/site';
+
+const ordered = [...projects].sort((a, b) => a.order - b.order);
+---
+
+<Base>
+  <Nav />
+  <main>
+    <Hero />
+
+    <section class="container section" id="work" aria-labelledby="work-heading">
+      <h2 class="label section-heading" id="work-heading">Selected work</h2>
+      <div class="cards">
+        {ordered.map((project) => <ProjectCard project={project} />)}
+      </div>
+      <div class="also-built">
+        <span class="label">Also built</span>
+        <ul>
+          {alsoBuilt.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </section>
+
+    <section class="container section" id="experience" aria-labelledby="exp-heading">
+      <h2 class="label section-heading" id="exp-heading">Experience</h2>
+      <ul class="roles">
+        {
+          experience.map((role) => (
+            <li>
+              <div class="role-head">
+                <span class="role-title">{role.title}</span>
+                <span class="role-company">{role.company}</span>
+                <span class="label role-dates">{role.dates}</span>
+              </div>
+              <p>{role.line}</p>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="container section" id="about" aria-labelledby="about-heading">
+      <h2 class="label section-heading" id="about-heading">About</h2>
+      <p class="about-text">{about}</p>
+
+      <dl class="skills">
+        {
+          skills.map((group) => (
+            <div class="skill-row">
+              <dt class="label">{group.group}</dt>
+              <dd>{group.items.join(', ')}</dd>
+            </div>
+          ))
+        }
+      </dl>
+      <h3 class="label section-heading interests-heading">Interests</h3>
+      <dl class="skills">
+        {
+          interests.map((item) => (
+            <div class="skill-row">
+              <dt class="label">{item.group}</dt>
+              <dd>
+                {item.detail}
+                {item.favorites && (
+                  <span class="interest-line">
+                    Favorites:{' '}
+                    {item.favorites.map((title, i) => (
+                      <>{i > 0 && ', '}<cite>{title}</cite></>
+                    ))}
+                  </span>
+                )}
+                {item.link && (
+                  <span class="interest-line">
+                    <a href={item.link.href} target="_blank" rel="noopener">
+                      {item.link.label}
+                    </a>
+                    {item.todo && (
+                      <span class="interest-todo">
+                        {' '}
+                        <span class="todo-chip">TODO</span> {item.todo}
+                      </span>
+                    )}
+                  </span>
+                )}
+                {!item.link && item.todo && (
+                  <span class="interest-todo">
+                    {' '}
+                    <span class="todo-chip">TODO</span> {item.todo}
+                  </span>
+                )}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .section {
+    padding-block: clamp(2.5rem, 7vh, 4.5rem) 0;
+  }
+
+  .section-heading {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.75rem;
+  }
+
+  .cards {
+    display: grid;
+    gap: clamp(1.5rem, 4vh, 2.5rem);
+  }
+
+  /* cards fade + rise 12px on scroll into view (§6 motion rule 2);
+     without JS they are simply visible */
+  @media (prefers-reduced-motion: no-preference) {
+    :global(html.js) .cards > :global(*) {
+      opacity: 0;
+      transform: translateY(12px);
+      transition:
+        opacity 400ms ease,
+        transform 400ms ease;
+      transition-delay: var(--stagger, 0ms);
+    }
+
+    :global(html.js) .cards > :global(.in-view) {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .also-built {
+    margin-top: 1.75rem;
+  }
+
+  .also-built ul {
+    margin-top: 0.6rem;
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0.4rem;
+  }
+
+  .also-built li {
+    padding-left: 1.1rem;
+    position: relative;
+    max-width: var(--measure);
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .also-built li::before {
+    content: '·';
+    position: absolute;
+    left: 0.15rem;
+    color: var(--muted);
+  }
+
+  /* --- experience --- */
+
+  .roles {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .role-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .role-title {
+    font-weight: 500;
+  }
+
+  .role-company {
+    color: var(--muted);
+  }
+
+  .role-dates {
+    margin-left: auto;
+  }
+
+  .roles p {
+    margin-top: 0.25rem;
+    color: var(--muted);
+  }
+
+  /* --- about + skills --- */
+
+  .about-text {
+    font-size: var(--step-1);
+    line-height: 1.55;
+    margin: 0;
+  }
+
+  .skills {
+    margin-top: 2rem;
+    display: grid;
+    gap: 0.75rem;
+  }
+
+  .skill-row {
+    display: grid;
+    grid-template-columns: 10rem 1fr;
+    gap: 1rem;
+    align-items: baseline;
+  }
+
+  .skill-row dd {
+    margin: 0;
+  }
+
+  @media (max-width: 560px) {
+    .skill-row {
+      grid-template-columns: 1fr;
+      gap: 0.15rem;
+    }
+  }
+
+  .skills-todo {
+    margin-top: 1.5rem;
+    font-size: var(--step--1);
+    color: var(--muted);
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .interests-heading {
+    margin-top: 2.5rem;
+  }
+
+  .interest-line {
+    display: block;
+    margin-top: 0.15rem;
+  }
+
+  .interest-todo {
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .interest-todo .todo-chip {
+    margin-right: 0.35rem;
+  }
+</style>
+
+<script>
+  // Stagger cards into view, 60ms apart (§6 motion rule 2).
+  const cards = document.querySelectorAll<HTMLElement>('.cards > *');
+  cards.forEach((card, i) => {
+    card.style.setProperty('--stagger', `${(i % 3) * 60}ms`);
+  });
+  const observer = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          observer.unobserve(entry.target);
+        }
+      }
+    },
+    { rootMargin: '0px 0px -10% 0px' }
+  );
+  cards.forEach((card) => observer.observe(card));
+</script>

@@ -1,0 +1,219 @@
+---
+/* Hand-rolled inline SVG bar chart (§5: "a library is not worth the bundle").
+   Grouped bars: guess count on x, games on y, one bar per agent. Series
+   identity is carried by lightness (--ink vs --muted) plus the legend and
+   the table view — the chromatic tokens are reserved for state (§6). */
+import { benchmark, TOTAL_GAMES } from '../data/wordleBenchmark';
+
+const GUESSES = [1, 2, 3, 4, 5, 6];
+const SERIES_COLORS = ['var(--ink)', 'var(--muted)', 'var(--rule)'];
+
+const width = 640;
+const height = 300;
+const margin = { top: 24, right: 8, bottom: 34, left: 8 };
+const plotW = width - margin.left - margin.right;
+const plotH = height - margin.top - margin.bottom;
+
+const maxCount = Math.max(...benchmark.flatMap((s) => GUESSES.map((g) => s.counts[g] ?? 0)));
+const groupW = plotW / GUESSES.length;
+const barGap = 2; // 2px surface gap between adjacent bars
+const barW = Math.min(34, (groupW - 24) / benchmark.length - barGap);
+
+function bar(seriesIndex: number, guessIndex: number) {
+  const count = benchmark[seriesIndex].counts[GUESSES[guessIndex]] ?? 0;
+  const h = maxCount === 0 ? 0 : (count / maxCount) * plotH;
+  const groupX = margin.left + guessIndex * groupW;
+  const totalBars = benchmark.length * (barW + barGap) - barGap;
+  const x = groupX + (groupW - totalBars) / 2 + seriesIndex * (barW + barGap);
+  const y = margin.top + plotH - h;
+  return { x, y, h, count };
+}
+
+const summary = benchmark
+  .map((s) => `${s.label}: average ${s.average.toFixed(2)} guesses, worst case ${s.worst}`)
+  .join('; ');
+---
+
+<figure class="chart">
+  <div class="legend" aria-hidden="true">
+    {
+      benchmark.map((s, i) => (
+        <span class="legend-item">
+          <span class="swatch" style={`background:${SERIES_COLORS[i]}`} />
+          <span class="label">{s.label}</span>
+        </span>
+      ))
+    }
+  </div>
+
+  <svg
+    viewBox={`0 0 ${width} ${height}`}
+    role="img"
+    aria-label={`Guess distribution over all ${TOTAL_GAMES.toLocaleString()} answers. ${summary}.`}
+  >
+    {
+      benchmark.map((s, si) =>
+        GUESSES.map((g, gi) => {
+          const b = bar(si, gi);
+          if (b.count === 0) return null;
+          return (
+            <g>
+              <rect
+                x={b.x}
+                y={b.y}
+                width={barW}
+                height={Math.max(b.h, 2)}
+                rx="2"
+                fill={SERIES_COLORS[si]}
+              />
+              <text
+                x={b.x + barW / 2}
+                y={b.y - 6}
+                text-anchor="middle"
+                class="value"
+              >
+                {b.count.toLocaleString()}
+              </text>
+            </g>
+          );
+        })
+      )
+    }
+    {/* baseline + x labels */}
+    <line
+      x1={margin.left}
+      y1={margin.top + plotH}
+      x2={width - margin.right}
+      y2={margin.top + plotH}
+      stroke="var(--rule)"
+    />
+    {
+      GUESSES.map((g, gi) => (
+        <text
+          x={margin.left + gi * groupW + groupW / 2}
+          y={height - 12}
+          text-anchor="middle"
+          class="axis"
+        >
+          {g}
+        </text>
+      ))
+    }
+  </svg>
+  <figcaption>
+    Guesses per game across all {TOTAL_GAMES.toLocaleString()} possible answers — the
+    full benchmark, each agent using its own opener and the 12,972-word guess pool.
+  </figcaption>
+
+  <details>
+    <summary>View as table</summary>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Guesses</th>
+          {benchmark.map((s) => <th scope="col">{s.label}</th>)}
+        </tr>
+      </thead>
+      <tbody>
+        {
+          GUESSES.map((g) => (
+            <tr>
+              <th scope="row">{g}</th>
+              {benchmark.map((s) => <td>{(s.counts[g] ?? 0).toLocaleString()}</td>)}
+            </tr>
+          ))
+        }
+        <tr>
+          <th scope="row">Average</th>
+          {benchmark.map((s) => <td>{s.average.toFixed(2)}</td>)}
+        </tr>
+        <tr>
+          <th scope="row">Worst</th>
+          {benchmark.map((s) => <td>{s.worst}</td>)}
+        </tr>
+      </tbody>
+    </table>
+  </details>
+</figure>
+
+<style>
+  .chart {
+    margin: 2rem 0;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    background: var(--surface);
+    padding: 1.25rem;
+  }
+
+  .legend {
+    display: flex;
+    gap: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .legend-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+  }
+
+  svg {
+    width: 100%;
+    height: auto;
+  }
+
+  .value {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--muted);
+  }
+
+  .axis {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    fill: var(--muted);
+  }
+
+  figcaption {
+    margin-top: 0.75rem;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  details {
+    margin-top: 0.75rem;
+    font-size: var(--step--1);
+  }
+
+  summary {
+    cursor: pointer;
+    font-family: var(--font-mono);
+    font-size: var(--label-size);
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    color: var(--muted);
+  }
+
+  table {
+    margin-top: 0.75rem;
+    border-collapse: collapse;
+  }
+
+  th,
+  td {
+    text-align: right;
+    padding: 0.25rem 0.9rem 0.25rem 0;
+    border-bottom: 1px solid color-mix(in srgb, var(--rule) 40%, transparent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  th {
+    font-weight: 500;
+  }
+</style>

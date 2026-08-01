@@ -1,0 +1,329 @@
+---
+import { Picture } from 'astro:assets';
+import type { Project } from '../data/projects';
+
+interface Props {
+  project: Project;
+}
+
+const { project } = Astro.props;
+const number = String(project.order).padStart(2, '0');
+---
+
+<article class="card" id={project.id}>
+  {
+    project.blocked && (
+      <p class="blocked" role="note">
+        <strong>Do not deploy:</strong> {project.blocked}
+      </p>
+    )
+  }
+
+  <header class="card-head">
+    <span class="label number">{number}</span>
+    <h3>{project.title}</h3>
+    <span class="label context">{project.context}</span>
+    {project.hasDemo && <span class="label demo-badge">interactive</span>}
+  </header>
+
+  {
+    project.media?.image && (
+      <figure class="media">
+        <Picture
+          src={project.media.image.src}
+          alt={project.media.image.alt}
+          formats={['avif', 'webp']}
+          widths={[640, 833, 1280]}
+          sizes="(max-width: 1080px) 100vw, 1016px"
+        />
+        {project.media.image.note && (
+          <figcaption class="label media-note">{project.media.image.note}</figcaption>
+        )}
+      </figure>
+    )
+  }
+  {
+    !project.media?.image && project.media?.split && (
+      <div class="split" role="img" aria-label={`${project.media.split.leftAlt} becoming ${project.media.split.rightAlt}`}>
+        <div class="panel left">
+          <span class="placeholder">{project.media.split.leftAlt}</span>
+        </div>
+        <div class="gutter" aria-hidden="true">
+          <span class="arrow">→</span>
+        </div>
+        <div class="panel right">
+          <span class="placeholder">{project.media.split.rightAlt}</span>
+          <span class="check" aria-hidden="true">✓</span>
+        </div>
+        <span class="label stage stage-left" aria-hidden="true">{project.media.split.leftLabel}</span>
+        <span class="label stage stage-right" aria-hidden="true">{project.media.split.rightLabel}</span>
+      </div>
+    )
+  }
+
+  <div class="body">
+    {project.summary.map((para) => <p>{para}</p>)}
+  </div>
+
+  <ul class="tags" aria-label="Technologies">
+    {project.tags.map((tag) => <li class="label">{tag}</li>)}
+  </ul>
+
+  {
+    (project.links?.length || project.deepDive) && (
+      <ul class="links">
+        {project.deepDive && (
+          <li>
+            <a href={project.deepDive}>Read the write-up / Try it</a>
+          </li>
+        )}
+        {project.links?.map((link) => {
+          const newTab = link.href.startsWith('http') || link.href.endsWith('.pdf');
+          return (
+            <li>
+              <a
+                href={link.href}
+                target={newTab ? '_blank' : undefined}
+                rel={newTab ? 'noopener' : undefined}
+              >
+                {link.label}
+              </a>
+              {link.href.includes('TODO') && <span class="todo-chip">TODO</span>}
+            </li>
+          );
+        })}
+      </ul>
+    )
+  }
+
+  {
+    project.todos?.length && (
+      <ul class="todos" aria-label="Unresolved items">
+        {project.todos.map((todo) => (
+          <li>
+            <span class="todo-chip">TODO</span> {todo}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+</article>
+
+<style>
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: clamp(1.25rem, 4vw, 2rem);
+  }
+
+  .blocked {
+    font-size: var(--step--1);
+    color: var(--pending-text);
+    border: 1px solid var(--pending);
+    border-radius: 2px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 1.25rem;
+    max-width: none;
+  }
+
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.9rem;
+    flex-wrap: wrap;
+  }
+
+  .number {
+    color: var(--muted);
+  }
+
+  h3 {
+    font-size: var(--step-2);
+  }
+
+  .context {
+    margin-left: auto;
+  }
+
+  .demo-badge {
+    color: var(--matched-text);
+    border: 1px solid var(--matched);
+    border-radius: 2px;
+    padding: 0.05rem 0.35rem;
+  }
+
+  /* --- real media --- */
+
+  .media {
+    margin-top: 1.25rem;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+
+  .media-note {
+    display: block;
+    border-top: 1px solid var(--rule);
+    padding: 0.4rem 0.75rem;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  .media :global(img) {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* --- reconciliation split (§6): placeholder until real media lands --- */
+
+  .split {
+    margin-top: 1.25rem;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-rows: auto auto;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+  }
+
+  .panel {
+    padding: 1.5rem 1.25rem;
+    min-height: 6.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+
+  .left {
+    background: color-mix(in srgb, var(--paper) 55%, var(--surface));
+  }
+
+  .left .placeholder {
+    color: var(--muted);
+    font-size: var(--step--1);
+  }
+
+  .right .placeholder {
+    font-size: var(--step--1);
+  }
+
+  .check {
+    font-family: var(--font-mono);
+    color: var(--matched-text);
+  }
+
+  .gutter {
+    grid-row: 1;
+    border-inline: 1px solid var(--rule);
+    display: grid;
+    place-items: center;
+    padding-inline: 0.5rem;
+  }
+
+  .arrow {
+    font-family: var(--font-mono);
+    color: var(--muted);
+  }
+
+  .stage {
+    padding: 0.35rem 1.25rem 0.5rem;
+    border-top: 1px solid var(--rule);
+  }
+
+  .stage-left {
+    grid-column: 1;
+  }
+
+  .stage-right {
+    grid-column: 3;
+    color: var(--matched-text);
+  }
+
+  @media (max-width: 560px) {
+    .split {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+    }
+
+    .gutter {
+      grid-row: auto;
+      border-inline: none;
+      border-block: 1px solid var(--rule);
+      padding-block: 0.25rem;
+    }
+
+    .arrow {
+      display: inline-block;
+      transform: rotate(90deg);
+    }
+
+    .stage {
+      border-top: none;
+      padding: 0.2rem 1.25rem;
+    }
+
+    .stage-left {
+      grid-column: 1;
+      order: -1;
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .stage-right {
+      grid-column: 1;
+      border-top: 1px solid var(--rule);
+    }
+  }
+
+  /* --- body, tags, links --- */
+
+  .body {
+    margin-top: 1.25rem;
+    display: grid;
+    gap: 0.9rem;
+  }
+
+  .tags {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .links {
+    margin-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 1.75rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .links a {
+    font-weight: 500;
+  }
+
+  .links li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .todos {
+    margin-top: 1.25rem;
+    border-top: 1px dashed var(--rule);
+    padding: 0.75rem 0 0;
+    list-style: none;
+    display: grid;
+    gap: 0.4rem;
+    font-size: var(--step--1);
+    color: var(--muted);
+  }
+
+  .todos li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+</style>

@@ -1,0 +1,72 @@
+---
+import { site, heroLinks } from '../data/site';
+---
+
+<section class="container hero">
+  <h1>{site.name}</h1>
+  <p class="positioning">{site.positioning}</p>
+
+  <ul class="links">
+    {
+      heroLinks.map((link) => {
+        /* External sites and the PDF open in a new tab; mailto stays as is. */
+        const newTab = link.href.startsWith('http') || link.href.endsWith('.pdf');
+        return (
+          <li>
+            <a
+              href={link.href}
+              target={newTab ? '_blank' : undefined}
+              rel={newTab ? 'noopener' : undefined}
+            >
+              {link.label}
+            </a>
+            {link.todo && <span class="todo-chip">TODO</span>}
+          </li>
+        );
+      })
+    }
+  </ul>
+</section>
+
+<style>
+  .hero {
+    padding-block: clamp(3rem, 10vh, 6rem) clamp(2.5rem, 6vh, 4rem);
+  }
+
+  h1 {
+    font-size: clamp(var(--step-4), 8vw, var(--step-5));
+    font-weight: 550;
+    font-stretch: 87.5%; /* the width axis carries the hero, not weight (§6) */
+    letter-spacing: -0.01em;
+  }
+
+  .positioning {
+    margin-top: 1rem;
+    font-size: var(--step-1);
+    line-height: 1.45;
+    max-width: 44ch;
+    color: var(--ink);
+  }
+
+  /* --- links --- */
+
+  .links {
+    margin-top: clamp(2rem, 5vh, 3rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    list-style: none;
+    padding: 0;
+  }
+
+  .links li {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .links a {
+    font-weight: 500;
+  }
+
+</style>

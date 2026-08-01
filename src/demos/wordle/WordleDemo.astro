@@ -1,0 +1,42 @@
+---
+/* Mount point for the Wordle demo island. The page is complete without it
+   (§3): with JS disabled only the one-line note below renders — never an
+   empty box. The island code and word lists load only when this scrolls
+   into view. */
+---
+
+<div id="wordle-demo">
+  <noscript>
+    <p class="demo-fallback">
+      The live demo needs JavaScript. The write-up and benchmarks above are the whole argument —
+      the demo is just the argument running.
+    </p>
+  </noscript>
+</div>
+
+<style>
+  .demo-fallback {
+    font-size: var(--step--1);
+    color: var(--muted);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.75rem 1rem;
+  }
+</style>
+
+<script>
+  const target = document.getElementById('wordle-demo');
+  if (target) {
+    const observer = new IntersectionObserver(
+      async (entries) => {
+        if (entries.some((e) => e.isIntersecting)) {
+          observer.disconnect();
+          const { mount } = await import('./mount');
+          mount(target);
+        }
+      },
+      { rootMargin: '200px 0px' }
+    );
+    observer.observe(target);
+  }
+</script>
