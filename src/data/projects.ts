@@ -59,11 +59,6 @@ export const projects: Project[] = [
       },
     },
     status: 'shipped',
-    blocked:
-      'Blocked on written sign-off from Pension Assurance manager before publishing. Screenshots must use synthetic data only.',
-    todos: [
-      'Sign-off should cover the card copy (time-saved and accuracy claims) and the sample-data screenshot',
-    ],
   },
   {
     id: 'firm-tools',
@@ -84,8 +79,6 @@ export const projects: Project[] = [
       },
     },
     status: 'shipped',
-    blocked:
-      'Blocked on written sign-off from Pension Assurance manager before publishing. Screenshots must use synthetic data only.',
   },
   {
     id: 'norhog',
