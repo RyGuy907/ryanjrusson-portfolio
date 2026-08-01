@@ -1,0 +1,37 @@
+---
+import Base from '../layouts/Base.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Base title="Not found — Ryan Russon" description="That page doesn’t exist.">
+  <Nav />
+  <main>
+    <section class="container notfound">
+      <p class="label">404</p>
+      <h1>That page doesn’t exist.</h1>
+      <p class="lede">
+        The link may be out of date, or the address mistyped.
+        <a href="/">Head back to the homepage</a>.
+      </p>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<style>
+  .notfound {
+    padding-block: clamp(4rem, 14vh, 8rem) clamp(4rem, 12vh, 7rem);
+  }
+
+  h1 {
+    margin-top: 0.75rem;
+    font-size: clamp(var(--step-3), 6vw, var(--step-4));
+  }
+
+  .lede {
+    margin-top: 1rem;
+    font-size: var(--step-1);
+    color: var(--muted);
+  }
+</style>
