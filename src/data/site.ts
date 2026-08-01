@@ -76,9 +76,7 @@ export const skills: { group: string; items: string[] }[] = [
       'Docker',
     ],
   },
-  /* "Claude API" stays off until a project on the page actually uses it
-     (the extraction-benchmark idea would earn it back). */
-  { group: 'AI tooling', items: ['Claude Code'] },
+  { group: 'AI tooling', items: ['Claude API', 'Claude Code'] },
 ];
 
 /* Interests — same grouped-row treatment as skills: concrete over generic,
