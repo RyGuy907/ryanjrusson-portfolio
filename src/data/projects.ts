@@ -50,7 +50,7 @@ export const projects: Project[] = [
       'An automation tool that reads a SOC 1 Type 2 report and produces the firm’s filled-in review workpapers, flagging uncertainties for review. A SOC 1 review can include up to 2 hours of manual reading and scanning; the tool removes much of the manual searching, with a reviewer still verifying the result.',
       'Uses an algorithmic, deterministic matching approach (no LLM layer), and accuracy is measured against existing completed reports. In testing, the tool exhibits zero high-confidence match errors. The suite continues in 02.',
     ],
-    tags: ['Python', 'PyMuPDF', 'openpyxl', 'tesseract OCR', 'Flask'],
+    tags: ['Python', 'PyMuPDF', 'openpyxl', 'Flask'],
     media: {
       image: {
         src: soc1Tool,
@@ -70,7 +70,7 @@ export const projects: Project[] = [
       'The CPE tracker turns a folder of continuing-education certificates — different providers and layouts, some scanned — into the firm’s filled compliance spreadsheet, flagging anything uncertain for review.',
       'The proposal generator builds a complete engagement package — cover letter, marketing body, engagement letter, merged PDF — from internal templates and data sheets. Both were 10–20 minute manual processes, now made near-instant.',
     ],
-    tags: ['Python', 'PyMuPDF', 'openpyxl', 'OOXML', 'tesseract OCR'],
+    tags: ['Python', 'pdfplumber', 'pypdf', 'openpyxl', 'OOXML', 'tesseract OCR'],
     media: {
       image: {
         src: cpeTracker,
