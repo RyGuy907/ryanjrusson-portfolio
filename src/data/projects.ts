@@ -68,9 +68,17 @@ export const projects: Project[] = [
     summary: [
       'The other two tools in the suite, built on the same architecture as the SOC 1 pipeline.',
       'The CPE tracker turns a folder of continuing-education certificates — different providers and layouts, some scanned — into the firm’s filled compliance spreadsheet, flagging anything uncertain for review.',
-      'The proposal generator builds a complete engagement package — cover letter, marketing body, engagement letter, merged PDF — from internal templates and data sheets. Both were 10–20 minute manual processes, now made near-instant.',
+      'The proposal generator builds a complete engagement package — cover letter, marketing body, engagement letter, merged PDF — from internal templates and request data pulled via the Smartsheet API. Both were 10–20 minute manual processes, now made near-instant.',
     ],
-    tags: ['Python', 'pdfplumber', 'pypdf', 'openpyxl', 'OOXML', 'tesseract OCR'],
+    tags: [
+      'Python',
+      'Smartsheet API',
+      'pdfplumber',
+      'pypdf',
+      'openpyxl',
+      'OOXML',
+      'tesseract OCR',
+    ],
     media: {
       image: {
         src: cpeTracker,
