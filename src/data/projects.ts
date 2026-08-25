@@ -47,10 +47,10 @@ export const projects: Project[] = [
     title: 'SOC 1 Automation Suite',
     context: 'Pension Assurance LLP · Professional',
     summary: [
-      'An automation tool that reads a SOC 1 Type 2 report and produces the firm’s filled-in review workpapers, flagging uncertainties for review. A SOC 1 review can include up to 2 hours of manual reading and scanning; the tool removes much of the manual searching, with a reviewer still verifying the result.',
+      'An automation tool that reads a SOC 1 Type 2 report and produces the firm’s filled-in review workpapers, flagging uncertainties for review. A SOC 1 review can include up to 2 hours of manual reading and scanning; the tool removes much of the manual searching, with a reviewer still verifying the result. A companion Excel add-in lets reviewers run the tool and work the flagged items without leaving the workpaper.',
       'Uses an algorithmic, deterministic matching approach (no LLM layer), and accuracy is measured against existing completed reports. In testing, the tool exhibits zero high-confidence match errors. The suite continues in 02.',
     ],
-    tags: ['Python', 'PyMuPDF', 'openpyxl', 'Flask'],
+    tags: ['Python', 'PyMuPDF', 'openpyxl', 'Excel add-in', 'Flask'],
     media: {
       image: {
         src: soc1Tool,
