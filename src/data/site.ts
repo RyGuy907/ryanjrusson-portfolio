@@ -61,7 +61,7 @@ export const experience: Role[] = [
 
 /* First person, plain, Ryan's own words (July 2026). */
 export const about =
-  "I study computer science at BYU with a history minor — 3.98 GPA, graduating December 2026. I'm from Agoura Hills, California, and I enjoy solving problems, learning new things, and building useful applications.";
+  "I study computer science at BYU with a history minor — 3.98 GPA, graduating December 2026. I'm from Agoura Hills, California. What I enjoy most is taking something from a rough idea to a finished tool.";
 
 export const skills: { group: string; items: string[] }[] = [
   { group: 'Languages', items: ['Python', 'JavaScript', 'TypeScript', 'Java', 'C++'] },
