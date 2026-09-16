@@ -5,39 +5,18 @@ import norhog from '../assets/norhog.png';
 import soc1Tool from '../assets/soc1.png';
 import wordleAssist from '../assets/wordle-assist.png';
 
-export type SplitSpec = {
-  /* The reconciliation split: unstructured input → structured output (§6). */
-  leftLabel: string;   // monospace stage label under the left panel, e.g. "EXTRACT"
-  rightLabel: string;  // stage label under the right panel, e.g. "WRITE"
-  leftAlt: string;     // description of the left artifact for alt/aria
-  rightAlt: string;
-};
-
-export type MediaSpec = {
-  /* Placeholder reconciliation split, rendered until real media exists. */
-  split?: SplitSpec;
-  /* Real screenshot/diagram — takes precedence over the split. `note`
-     renders as a small caption below the image. */
-  image?: { src: ImageMetadata; alt: string; note?: string };
-};
-
 export type Project = {
-  id: string;
+  id: string; // also the card's anchor, so a deep dive can link back to it
   order: number;
   title: string;
   context: string; // "Pension Assurance LLP · Professional"
   summary: string[]; // paragraphs
   tags: string[];
   links?: { label: string; href: string }[];
-  media?: MediaSpec;
+  /* `note` renders as a small caption below the image. */
+  image?: { src: ImageMetadata; alt: string; note?: string };
   deepDive?: string; // route path, if one exists
-  hasDemo?: boolean; // drives the "interactive" badge on the card
-  status?: 'shipped' | 'in-progress'; // maps to --matched / --pending
-  /* Visible during development so nothing ships silently unresolved (§8.4).
-     Remove entries as they land; the card renders them as warning chips. */
-  todos?: string[];
-  /* Card renders with a blocking banner and must not deploy until cleared. */
-  blocked?: string;
+  hasDemo?: boolean; // shows the "interactive" badge on the card
 };
 
 export const projects: Project[] = [
@@ -51,14 +30,11 @@ export const projects: Project[] = [
       'Uses an algorithmic, deterministic matching approach (no LLM layer), and accuracy is measured against existing completed reports. In testing, the tool exhibits zero high-confidence match errors. The suite continues in 02.',
     ],
     tags: ['Python', 'PyMuPDF', 'openpyxl', 'Excel add-in', 'Flask'],
-    media: {
-      image: {
-        src: soc1Tool,
-        alt: 'The SOC 1 review tool with a sample report beside the generated workpaper rows',
-        note: 'All report and workpaper content shown is fabricated sample data.',
-      },
+    image: {
+      src: soc1Tool,
+      alt: 'The SOC 1 review tool with a sample report beside the generated workpaper rows',
+      note: 'All report and workpaper content shown is fabricated sample data.',
     },
-    status: 'shipped',
   },
   {
     id: 'firm-tools',
@@ -79,14 +55,11 @@ export const projects: Project[] = [
       'OOXML',
       'tesseract OCR',
     ],
-    media: {
-      image: {
-        src: cpeTracker,
-        alt: 'The CPE tracker reviewer showing a sample certificate beside the fields read from it',
-        note: 'All certificates and personal details shown are fabricated sample data.',
-      },
+    image: {
+      src: cpeTracker,
+      alt: 'The CPE tracker reviewer showing a sample certificate beside the fields read from it',
+      note: 'All certificates and personal details shown are fabricated sample data.',
     },
-    status: 'shipped',
   },
   {
     id: 'norhog',
@@ -98,15 +71,14 @@ export const projects: Project[] = [
       'CI/CD pipeline: GitHub Actions runs frontend and service test suites in parallel; both must pass before a deploy job that activates on a push to main. GitHub OIDC authenticates with IAM role assumption — removing the need for AWS keys in repository secrets — and the build produces a tarball and pushes it to S3, triggering deployment through AWS SSM. If a deploy fails, the server automatically rolls back to the previous release.',
     ],
     tags: ['React', 'Node/Express', 'MongoDB', 'GitHub Actions', 'OIDC', 'EC2', 'SSM', 'Caddy'],
-    /* No repo link — GitHub is off the site by Ryan's decision (see site.ts). */
-    links: [{ label: 'Live site', href: 'https://norhog.com' }],
-    media: {
-      image: {
-        src: norhog,
-        alt: 'norhog.com — the history trivia site live in production',
-      },
+    links: [
+      { label: 'Live site', href: 'https://norhog.com' },
+      { label: 'Source', href: 'https://github.com/RyGuy907/norhog' },
+    ],
+    image: {
+      src: norhog,
+      alt: 'norhog.com — the history trivia site live in production',
     },
-    status: 'shipped',
   },
   {
     id: 'byu-law',
@@ -119,13 +91,10 @@ export const projects: Project[] = [
     ],
     links: [{ label: 'Public site', href: 'https://law.byu.edu' }],
     tags: ['React', 'Svelte', 'AWS ECS', 'S3', 'Route 53', 'CloudWatch'],
-    media: {
-      image: {
-        src: byuLaw,
-        alt: 'The BYU Law School public website — one of two production applications migrated from React to Svelte',
-      },
+    image: {
+      src: byuLaw,
+      alt: 'The BYU Law School public website — one of two production applications migrated from React to Svelte',
     },
-    status: 'shipped',
   },
   {
     id: 'wordle',
@@ -136,25 +105,18 @@ export const projects: Project[] = [
       'Two agents solving Wordle from a shared belief state — a Bayes filter that prunes the 2,315 possible answers after every guess. One picks guesses risk-neutrally, maximizing expected information gain; the other is risk-averse, minimizing the worst case. Benchmarked over every possible answer, and against a human player.',
     ],
     tags: ['Python', 'TypeScript', 'POMDP', 'entropy', 'minimax', 'Web Workers'],
-    media: {
-      image: {
-        src: wordleAssist,
-        alt: 'Terminal running the Python Wordle assistant beside a solved Wordle board — candidates collapse from 2,315 to 1 and the puzzle is solved in four guesses',
-      },
+    links: [{ label: 'Source', href: 'https://github.com/RyGuy907/wordle-solver' }],
+    image: {
+      src: wordleAssist,
+      alt: 'Terminal running the Python Wordle assistant beside a solved Wordle board — candidates collapse from 2,315 to 1 and the puzzle is solved in four guesses',
     },
     deepDive: '/work/wordle',
     hasDemo: true,
-    status: 'shipped',
   },
-  /*
-   * 05 — Chess engine. CONDITIONAL (§5 card 05): include only if the AI
-   * opponent is actually built; otherwise it stays in `alsoBuilt` below.
-   * Blocking TODO #6 — Ryan decides. Card copy is drafted in the spec.
-   */
 ];
 
-/** "Also built" list — no cards, no screenshots (§5). Ordered least-common
-    first, same scarcity logic as the main cards. */
+/** Smaller projects, listed without cards or screenshots. Ordered by how
+    uncommon the work is, same as the cards above. */
 export const alsoBuilt: string[] = [
   'CI/CD and observability for a Node/React app — OIDC deploys to AWS ECS, custom Grafana metrics, Playwright E2E suite',
   'AI agents — Reversi tournament agent with minimax and alpha-beta pruning, Bayes-filter robot localization, value-iteration planning under uncertainty',

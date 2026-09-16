@@ -34,6 +34,7 @@ npm run build    # static output in dist/
 | Script | Purpose |
 |---|---|
 | `scripts/og-image.mjs` | Regenerates the Open Graph image (`public/og.png`) |
+| `scripts/favicon.mjs` | Regenerates `public/favicon.svg` from the Bricolage Grotesque "R" |
 | `scripts/compute-openers.mjs` | Recomputes both Wordle agents' opening guesses (committed as constants in `src/demos/wordle/openers.ts`) |
 | `scripts/benchmark.mjs` | Benchmarks both agents over all 2,315 answers; feeds `src/data/wordleBenchmark.ts` |
 | `scripts/find-divergence.mjs` | Finds games where the two agents' paths diverge (used to pick the walkthrough) |

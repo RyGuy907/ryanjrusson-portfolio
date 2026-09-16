@@ -28,7 +28,7 @@ choose the next word to guess.
 Both agents evaluate a guess the same way: bucket the remaining answers
 by the feedback pattern each would produce. A guess that splits the answers into
 many small buckets is a good one, because few candidates will remain for whatever
-comes back. A guess that leaves one big bucket is a bad, for the opposite reason. 
+comes back. A guess that leaves one big bucket is a bad one, for the opposite reason. 
 The agents differ only in how they judge the buckets:
 
 **The entropy agent is risk-neutral.** It treats the bucket sizes as a probability
@@ -48,12 +48,13 @@ every time. Each agent computes its own:
 | Agent | Opener | Expected bits | Worst-case bucket | Could it be the answer? |
 |---|---|---|---|---|
 | Entropy | `soare` | 5.886 | 183 | no |
-| Risk-averse | `arise` | 5.821 | 168 | yes |
+| Risk-averse | `raise` | 5.878 | 168 | yes |
 
 `soare` (a young hawk) is not in the answer list at all. The entropy agent spends 
-the first turn purely on information. The risk-averse agent takes a different
-approach: four words tie for the best worst case (168 candidates), and
-it takes the one that is also a legal answer.
+the first turn purely on information. The risk-averse agent has a real tie to
+settle: five words reach the best worst case of 168 candidates, and two of them
+(`arise` and `raise`) are themselves possible answers. It takes `raise`, which
+carries the most information of the five and could also win outright.
 
 Because the opener is deterministic, it is computed offline once and committed as
 a constant — scoring 12,972 candidate guesses against all 2,315 answers live
@@ -66,14 +67,23 @@ Both agents solve every one of the 2,315 possible answers, guessing from the ful
 
 <GuessChart />
 
-Neither agent ever loses. **The entropy agent is better on average — 3.53 guesses
-to 3.60 — but the risk-averse agent never needs more than 5, while entropy requires
-6 exactly once.** Each agent is optimal at what it was designed for, and compromises
+Neither agent ever loses. **The entropy agent is better on average — 3.46 guesses
+to 3.52 — but the risk-averse agent never needs more than 5, while entropy requires
+6 exactly once.** Each agent wins on the metric it was built for and gives up ground
 on the other.
 
-The single word that costs the entropy agent a sixth guess is `waver`. It is part of 
-a large one-letter-swap family (*waver, wafer, water, wager, waxer…*), the kind of 
-large bucket situation the risk-averse agent was designed never to walk into.
+The single word that costs the entropy agent a sixth guess is `waver`. It sits in a
+family of answers separated by one letter — *wafer, wager, water, waver* — and on the
+fifth turn the entropy agent is left choosing between two of them with nothing to
+separate them. Walking into that is what the risk-averse agent spends its average
+performance avoiding.
+
+The ordering survives a change of opener, which suggests it comes from the two
+objectives rather than from one lucky word. Running both agents on a shared `salet`
+opener instead gives 3.43 and worst case 6 for entropy, against 3.48 and worst case 5
+for the risk-averse agent. That comparison also shows the cost of choosing an opener
+greedily: `salet` beats *both* agents' own openers, despite scoring worse on both of
+their criteria at move one. One move ahead is not the same as best overall.
 
 Against a human baseline — five random games, played blind and then re-run through
 both agents — the agents matched or beat the human on every word, and the human
@@ -90,9 +100,11 @@ watch it collapse from 2,315 to 1.
 
 ## Implementation notes
 
-- The in-browser agents are a TypeScript port of the original Python, running in a
-  **Web Worker**. It has the same Bayes filter and same bucket scoring. 
-  Feedback patterns are base-3 integers (3⁵ = 243 per guess).
+- The in-browser agents are a TypeScript port of the <a href="https://github.com/RyGuy907/wordle-solver" target="_blank" rel="noopener">original Python project</a>, running in a
+  **Web Worker**. It has the same Bayes filter, the same bucket scoring and the same
+  tie-break order, and it returns the same guess count as the Python project for
+  every one of the 2,315 answers. Feedback patterns are base-3 integers
+  (3⁵ = 243 per guess).
 - The original project precomputes the full 12,972 × 2,315 guess-by-answer pattern
   table. The port skips the table: with the **opening guess
   precomputed**, every later turn faces a candidate set small enough to score in

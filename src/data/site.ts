@@ -1,26 +1,23 @@
 /* Site-wide content. Everything a template renders lives here or in
-   projects.ts — no copy hardcoded in .astro files (§12). */
+   projects.ts, so changing copy never means editing a template. */
 
 export const site = {
   domain: 'ryanjrusson.com',
   url: 'https://ryanjrusson.com',
   name: 'Ryan Russon',
   title: 'Ryan Russon — Software Engineer',
+  // Meta description and hero line. Same text for now, but kept separate so
+  // one can change without the other.
   description:
     'CS senior at BYU with production software in daily use: document automation for a CPA firm, internal apps for a university, and a live site of my own. Graduating December 2026.',
   positioning:
     'CS senior at BYU with production software in daily use: document automation for a CPA firm, internal apps for a university, and a live site of my own. Graduating December 2026.',
 };
 
-/* Labeled, no icons-only (§5 Hero). TODO markers render visibly in the page
-   until replaced — blocking TODO #7.
-
-   GitHub is deliberately absent (Ryan's call, July 2026): the profile is
-   mostly private school repos, and a link only earns its place once there
-   are public repos with consistent commits behind it. Re-adding it later is
-   appending one entry here. */
-export const heroLinks: { label: string; href: string; todo?: boolean }[] = [
+/* Shown as text labels, not bare icons. The footer reuses this list. */
+export const heroLinks: { label: string; href: string }[] = [
   { label: 'LinkedIn', href: 'https://www.linkedin.com/in/ryanjrusson/' },
+  { label: 'GitHub', href: 'https://github.com/RyGuy907' },
   { label: 'Resume (PDF)', href: '/ryanjrusson_resume.pdf' }, // stable URL, never renamed
   { label: 'Email', href: 'mailto:ryan.russon7@gmail.com' },
 ];
@@ -30,6 +27,13 @@ export type Role = {
   title: string;
   dates: string;
   line: string; // exactly one sentence — the PDF has the rest
+};
+
+/* This site's own repo. Footer only — it belongs with the colophon, not
+   beside the ways to get in touch. */
+export const siteSource = {
+  label: 'Site source',
+  href: 'https://github.com/RyGuy907/ryanjrusson-portfolio',
 };
 
 export const experience: Role[] = [
@@ -59,7 +63,6 @@ export const experience: Role[] = [
   },
 ];
 
-/* First person, plain, Ryan's own words (July 2026). */
 export const about =
   "I study computer science at BYU with a history minor — 3.98 GPA, graduating December 2026. I'm from Agoura Hills, California. What I enjoy most is taking something from a rough idea to a finished tool.";
 
@@ -79,15 +82,13 @@ export const skills: { group: string; items: string[] }[] = [
   { group: 'AI tooling', items: ['Claude API', 'Claude Code'] },
 ];
 
-/* Interests — same grouped-row treatment as skills: concrete over generic,
-   one line each, no prose narrative (§2 bans the journey section). */
+/* Same row layout as skills: one specific line per interest. */
 export const interests: {
   group: string;
   detail: string;
   /** Optional second line: book titles rendered as italicized <cite> elements. */
   favorites?: string[];
   link?: { label: string; href: string };
-  todo?: string;
 }[] = [
   {
     group: 'Music',
@@ -116,4 +117,3 @@ export const interests: {
     },
   },
 ];
-

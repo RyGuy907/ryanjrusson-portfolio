@@ -1,6 +1,7 @@
-/* Wordle solver engine — entropy and minimax agents.
-   Patterns are base-3 integers (§5 card 04): digit i is 0 gray / 1 yellow /
-   2 green for position i, least-significant digit first. 3^5 = 243 patterns. */
+/* Wordle solver engine: entropy and minimax agents.
+   A feedback pattern is a base-3 integer: digit i is 0 gray / 1 yellow /
+   2 green for position i, least-significant digit first. 3^5 = 243 patterns,
+   so bucketing by pattern is an array index instead of a string lookup. */
 
 export const ALL_GREEN = 242; // 22222 in base 3
 
@@ -69,8 +70,20 @@ export function scoreGuesses(guesses: string[], candidates: string[]): ScoredGue
       bits -= prob * Math.log2(prob);
     }
 
+    // Rounded so that guesses which are mathematically tied on information are
+    // seen as tied here too, and the explicit tie-break rules decide between
+    // them. Without it the last bits of the float decide, and the Python
+    // project — which computes the same quantity a different way — disagrees.
+    bits = Math.round(bits * 1e9) / 1e9;
+
     return { word, bits, worstCase, isCandidate: candidateSet.has(word) };
   });
+}
+
+/** Final tie-break. Without it the winner depends on word-list order, which
+    differs from the Python project's and would make the two disagree. */
+function compareWords(a: string, b: string): number {
+  return a < b ? -1 : a > b ? 1 : 0;
 }
 
 /** Entropy agent: maximize expected information gain. Ties break toward
@@ -80,7 +93,8 @@ export function rankByEntropy(scored: ScoredGuess[]): ScoredGuess[] {
     (a, b) =>
       b.bits - a.bits ||
       Number(b.isCandidate) - Number(a.isCandidate) ||
-      a.worstCase - b.worstCase
+      a.worstCase - b.worstCase ||
+      compareWords(a.word, b.word)
   );
 }
 
@@ -92,6 +106,7 @@ export function rankByMinimax(scored: ScoredGuess[]): ScoredGuess[] {
     (a, b) =>
       a.worstCase - b.worstCase ||
       Number(b.isCandidate) - Number(a.isCandidate) ||
-      b.bits - a.bits
+      b.bits - a.bits ||
+      compareWords(a.word, b.word)
   );
 }

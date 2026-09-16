@@ -250,8 +250,8 @@ export function mount(root: HTMLElement): void {
       );
     }
 
-    // Top candidate guesses with expected information gain (§5: the choice
-    // must be legible, not magic).
+    // Show the top-ranked guesses and their scores, so it's clear why the
+    // agent picked the word it did.
     if (!state.solved && !state.dead && state.topGuesses.length > 0) {
       const table = el('table', { class: 'wd-top' });
       table.append(
@@ -315,8 +315,8 @@ export function mount(root: HTMLElement): void {
     await advance(id);
   }
 
-  /** Ask the worker for the next guess; show a progress state only if the
-      search takes longer than 150ms (§3). */
+  /** Ask the worker for the next guess. The "searching…" state only appears
+      if the search takes longer than 150ms, so fast searches don't flicker. */
   async function advance(id: AgentId): Promise<void> {
     const state = agents[id];
     const slow = setTimeout(() => {

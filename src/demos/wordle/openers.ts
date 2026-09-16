@@ -1,10 +1,12 @@
-/* Opening-guess data, precomputed offline with scripts/compute-openers.mjs
-   and committed as constants (§5 card 04: the first turn is the only
-   expensive one, so it is the one we skip).
+/* Opening-guess data, computed offline with scripts/compute-openers.mjs and
+   committed as constants. Every game starts from the same 2,315 candidates,
+   so the first guess is always the same, and it's the only expensive one to
+   compute. Doing it live would cost seconds to get the same word each time.
 
    Each agent opens with its own computed choice: the entropy agent picks
-   SOARE, the risk-averse agent picks ARISE (four words tie at a worst case of
-   168; ARISE is the first that is also a valid answer). */
+   SOARE, the risk-averse agent picks RAISE. Five words tie at a worst case of
+   168, two of which are possible answers; RAISE wins because it carries the
+   most information of those. */
 
 import type { ScoredGuess } from './engine';
 
@@ -19,8 +21,8 @@ export const ENTROPY_OPENER: ScoredGuess[] = [
 
 /** Risk-averse agent's opener ranking: smallest worst-case bucket. */
 export const MINIMAX_OPENER: ScoredGuess[] = [
-  { word: 'arise', bits: 5.8209, worstCase: 168, isCandidate: true },
   { word: 'raise', bits: 5.8779, worstCase: 168, isCandidate: true },
+  { word: 'arise', bits: 5.8209, worstCase: 168, isCandidate: true },
   { word: 'aesir', bits: 5.622, worstCase: 168, isCandidate: false },
   { word: 'serai', bits: 5.5903, worstCase: 168, isCandidate: false },
   { word: 'reais', bits: 5.5859, worstCase: 168, isCandidate: false },

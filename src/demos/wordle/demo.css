@@ -1,5 +1,5 @@
-/* Wordle demo island styles. Self-contained per spec section 12 rule 4 —
-   imported by mount.ts, never by the shared bundle. */
+/* Wordle demo styles. Imported by mount.ts, not the global stylesheet, so
+   they only load along with the demo. */
 
 .wd {
   border: 1px solid var(--rule);

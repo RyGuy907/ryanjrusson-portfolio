@@ -1,8 +1,9 @@
 ---
-/* Hand-rolled inline SVG bar chart (§5: "a library is not worth the bundle").
-   Grouped bars: guess count on x, games on y, one bar per agent. Series
-   identity is carried by lightness (--ink vs --muted) plus the legend and
-   the table view — the chromatic tokens are reserved for state (§6). */
+/* Hand-built SVG bar chart, rendered at build time. A charting library
+   would have been the largest thing on the site for one chart.
+   Grouped bars: guess count on x, games on y, one bar per agent. The two
+   agents are told apart by lightness (--ink vs --muted), the legend, and the
+   table view, since green and amber are reserved for state. */
 import { benchmark, TOTAL_GAMES } from '../data/wordleBenchmark';
 
 const GUESSES = [1, 2, 3, 4, 5, 6];

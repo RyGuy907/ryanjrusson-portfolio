@@ -81,18 +81,6 @@ const ordered = [...projects].sort((a, b) => a.order - b.order);
                     <a href={item.link.href} target="_blank" rel="noopener">
                       {item.link.label}
                     </a>
-                    {item.todo && (
-                      <span class="interest-todo">
-                        {' '}
-                        <span class="todo-chip">TODO</span> {item.todo}
-                      </span>
-                    )}
-                  </span>
-                )}
-                {!item.link && item.todo && (
-                  <span class="interest-todo">
-                    {' '}
-                    <span class="todo-chip">TODO</span> {item.todo}
                   </span>
                 )}
               </dd>
@@ -121,8 +109,9 @@ const ordered = [...projects].sort((a, b) => a.order - b.order);
     gap: clamp(1.5rem, 4vh, 2.5rem);
   }
 
-  /* cards fade + rise 12px on scroll into view (§6 motion rule 2);
-     without JS they are simply visible */
+  /* Cards fade and rise 12px as they scroll into view. The hidden starting
+     state only applies once JS has run (html.js), so without JS the cards
+     are just visible. */
   @media (prefers-reduced-motion: no-preference) {
     :global(html.js) .cards > :global(*) {
       opacity: 0;
@@ -231,15 +220,6 @@ const ordered = [...projects].sort((a, b) => a.order - b.order);
     }
   }
 
-  .skills-todo {
-    margin-top: 1.5rem;
-    font-size: var(--step--1);
-    color: var(--muted);
-    display: flex;
-    align-items: baseline;
-    gap: 0.5rem;
-  }
-
   .interests-heading {
     margin-top: 2.5rem;
   }
@@ -248,19 +228,11 @@ const ordered = [...projects].sort((a, b) => a.order - b.order);
     display: block;
     margin-top: 0.15rem;
   }
-
-  .interest-todo {
-    font-size: var(--step--1);
-    color: var(--muted);
-  }
-
-  .interest-todo .todo-chip {
-    margin-right: 0.35rem;
-  }
 </style>
 
 <script>
-  // Stagger cards into view, 60ms apart (§6 motion rule 2).
+  // Stagger cards into view, 60ms apart. The delay repeats every three cards
+  // so a card far down the page never waits long.
   const cards = document.querySelectorAll<HTMLElement>('.cards > *');
   cards.forEach((card, i) => {
     card.style.setProperty('--stagger', `${(i % 3) * 60}ms`);

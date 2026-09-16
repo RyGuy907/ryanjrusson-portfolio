@@ -1,8 +1,10 @@
 /* Benchmark results for /work/wordle, from scripts/benchmark.mjs over all
    2,315 answers with the full 12,972-word guess pool. Each agent opens with
-   its own computed opener (entropy SOARE, risk-averse ARISE) rather than a
-   shared hardcoded word. Human baseline (5 games) lives in the deep-dive
-   prose — too few games for an honest chart series. */
+   its own computed opener (entropy SOARE, risk-averse RAISE) rather than a
+   shared hardcoded word. The Python project these agents were ported from
+   returns the same guess count for every one of the 2,315 words. Human
+   baseline (5 games) lives in the deep-dive prose — too few games for an
+   honest chart series. */
 
 export type BenchmarkSeries = {
   id: string;
@@ -19,15 +21,15 @@ export const benchmark: BenchmarkSeries[] = [
   {
     id: 'entropy',
     label: 'Entropy',
-    counts: { 1: 0, 2: 31, 3: 1105, 4: 1111, 5: 67, 6: 1 },
-    average: 3.53,
+    counts: { 1: 0, 2: 44, 3: 1217, 4: 990, 5: 63, 6: 1 },
+    average: 3.46,
     worst: 6,
   },
   {
     id: 'minimax',
     label: 'Minimax',
-    counts: { 1: 1, 2: 38, 3: 938, 4: 1258, 5: 80, 6: 0 },
-    average: 3.6,
+    counts: { 1: 1, 2: 67, 3: 1045, 4: 1129, 5: 73, 6: 0 },
+    average: 3.52,
     worst: 5,
   },
 ];

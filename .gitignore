@@ -3,6 +3,9 @@ dist/
 # generated types
 .astro/
 
+# local editor/tool settings
+.claude/settings.local.json
+
 # dependencies
 node_modules/
 

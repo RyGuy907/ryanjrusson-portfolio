@@ -1,7 +1,7 @@
 ---
-/* The repeatable deep-dive recipe (§12 rule 3): server-rendered prose and
-   static media first, optional demo island mounted on top. Every /work/*
-   page uses this layout — never a one-off page. */
+/* Shared layout for every /work/* write-up: server-rendered prose and
+   static media first, with an optional demo mounted on top. A new write-up
+   is a new .mdx file, not a new layout. */
 import Base from './Base.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';

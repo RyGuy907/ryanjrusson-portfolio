@@ -1,5 +1,7 @@
 /* ============================================================
-   Design tokens — see spec §6. Six values, cool, not warm.
+   Design tokens. Every color, font, and size on the site comes
+   from here. Green and amber are kept for state (solved or
+   verified, pending or unresolved), never used as decoration.
    ============================================================ */
 
 :root {
@@ -12,10 +14,10 @@
   --matched:  #2F6F5E;  /* the verified state — deep, desaturated green */
   --pending:  #A8701C;  /* unresolved / in-progress state — muted amber */
 
-  /* Darker text variants of the two state colors — the base values sit below
-     the 4.5:1 floor at small sizes (§7). Fills and large accents use the base
-     tokens; text at body size or below uses these. Verified ≥ 4.5:1 on
-     --paper, --surface, and the demo's tinted tile backgrounds. */
+  /* Darker text versions of the two state colors. The base values fall below
+     the WCAG 4.5:1 contrast minimum at small sizes, so fills and large accents
+     use the base tokens and text at body size or smaller uses these. Checked
+     at 4.5:1 or better on --paper, --surface, and the demo's tinted tiles. */
   --matched-text: #2A5E52;
   --pending-text: #7F581E;
 
@@ -165,7 +167,7 @@ a:hover {
   }
 }
 
-/* Visible keyboard focus — spec §7 */
+/* Visible keyboard focus */
 :focus-visible {
   outline: 2px solid var(--matched);
   outline-offset: 2px;
@@ -180,7 +182,7 @@ a:hover {
    Utility classes
    ============================================================ */
 
-/* Monospace field label — labels only, never running text (§6) */
+/* Monospace label: short labels only, never paragraphs */
 .label {
   font-family: var(--font-mono);
   font-size: var(--label-size);
@@ -196,11 +198,9 @@ a:hover {
   padding-inline: var(--gutter);
 }
 
-/* Content blocks are dark panels on the light page. Each panel redefines the
-   inherited color tokens, so any component nested inside one (hairlines,
-   muted text, state colors) flips to its on-dark value automatically. */
-/* Cards, plus the chart and demo on deep dives, sit on white against the warm
-   page, with a slightly cooler hairline than the page's warm rule. */
+/* Cards, the benchmark chart, and the demo sit on white, so they get a
+   cooler hairline than the warm page. Tokens inherit, so every border inside
+   them picks this up without any component knowing. */
 .card,
 .chart,
 .wd {
@@ -212,20 +212,6 @@ a:hover {
   border: 1px solid var(--rule);
   border-radius: 2px;
   padding: clamp(1.25rem, 4vw, 2rem);
-}
-
-/* Development markers — visible until the underlying TODO lands (§8 step 4).
-   These must all be gone before launch. */
-.todo-chip {
-  font-family: var(--font-mono);
-  font-size: var(--label-size);
-  text-transform: uppercase;
-  letter-spacing: -0.02em;
-  color: var(--pending-text);
-  border: 1px solid var(--pending);
-  border-radius: 2px;
-  padding: 0.05rem 0.35rem;
-  white-space: nowrap;
 }
 
 .visually-hidden {

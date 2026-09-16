@@ -20,7 +20,6 @@ import { site, heroLinks } from '../data/site';
             >
               {link.label}
             </a>
-            {link.todo && <span class="todo-chip">TODO</span>}
           </li>
         );
       })
@@ -36,7 +35,7 @@ import { site, heroLinks } from '../data/site';
   h1 {
     font-size: clamp(var(--step-4), 8vw, var(--step-5));
     font-weight: 550;
-    font-stretch: 87.5%; /* the width axis carries the hero, not weight (§6) */
+    font-stretch: 87.5%; /* narrower width, not heavier weight, gives the name its presence */
     letter-spacing: -0.01em;
   }
 

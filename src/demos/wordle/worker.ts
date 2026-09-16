@@ -1,5 +1,5 @@
-/* Web Worker for the Wordle demo. Owns the word lists and all scoring so the
-   main thread never blocks (§3). Interface:
+/* Web Worker for the Wordle demo. Owns the word lists and all scoring, so
+   the page stays responsive while the agents search. Messages:
    in:  { type: 'init' }
    in:  { type: 'solve', agent, history: [{ guess, pattern }] }
    out: { type: 'ready', answerCount }

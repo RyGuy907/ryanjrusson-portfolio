@@ -9,9 +9,9 @@ import { readFileSync } from 'node:fs';
 const answers = readFileSync('public/data/wordle/answers.txt', 'utf8').trim().split('\n').map((w) => w.trim());
 const extra = readFileSync('public/data/wordle/guesses.txt', 'utf8').trim().split('\n').map((w) => w.trim());
 const allGuesses = [...answers, ...extra];
-const answerSet = new Set(answers);
 const ALL_GREEN = 242;
 
+// Mirrors patternOf in src/demos/wordle/engine.ts.
 function patternOf(guess, answer) {
   const counts = new Array(26).fill(0);
   const result = [0, 0, 0, 0, 0];
@@ -31,6 +31,9 @@ function patternOf(guess, answer) {
 }
 
 function scoreAll(candidates) {
+  // Live candidates only: a tie is broken toward a guess that can win NOW, so
+  // this must be the current belief state and not the full answer list.
+  const live = new Set(candidates);
   const n = candidates.length;
   const histogram = new Uint16Array(243);
   return allGuesses.map((word) => {
@@ -45,7 +48,8 @@ function scoreAll(candidates) {
       const prob = count / n;
       bits -= prob * Math.log2(prob);
     }
-    return { word, bits, worstCase, isCandidate: answerSet.has(word) };
+    bits = Math.round(bits * 1e9) / 1e9; // see engine.ts: settle ties by rule, not rounding
+    return { word, bits, worstCase, isCandidate: live.has(word) };
   });
 }
 
@@ -54,8 +58,12 @@ function bestGuess(agent, candidates) {
   const scored = scoreAll(candidates);
   scored.sort(
     agent === 'entropy'
-      ? (a, b) => b.bits - a.bits || b.isCandidate - a.isCandidate || a.worstCase - b.worstCase
-      : (a, b) => a.worstCase - b.worstCase || b.isCandidate - a.isCandidate || b.bits - a.bits
+      ? (a, b) =>
+          b.bits - a.bits || b.isCandidate - a.isCandidate || a.worstCase - b.worstCase ||
+          (a.word < b.word ? -1 : a.word > b.word ? 1 : 0)
+      : (a, b) =>
+          a.worstCase - b.worstCase || b.isCandidate - a.isCandidate || b.bits - a.bits ||
+          (a.word < b.word ? -1 : a.word > b.word ? 1 : 0)
   );
   return scored[0].word;
 }

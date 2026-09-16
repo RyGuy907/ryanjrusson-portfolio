@@ -1,6 +1,6 @@
-/* Computes the opening guess for both agents offline (spec §5 card 04:
-   "Hardcode the opening guess"). Deterministic given the word lists in
-   public/data/wordle/. Output goes into src/demos/wordle/openers.ts.
+/* Computes the opening guess for both agents offline. The result only
+   depends on the word lists in public/data/wordle/, so it's committed to
+   src/demos/wordle/openers.ts instead of being computed in the browser.
 
    Usage: node scripts/compute-openers.mjs   (takes ~a minute) */
 

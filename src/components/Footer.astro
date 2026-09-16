@@ -1,5 +1,5 @@
 ---
-import { heroLinks } from '../data/site';
+import { heroLinks, siteSource } from '../data/site';
 
 const footerLinks = heroLinks.filter((l) => l.label !== 'Resume (PDF)');
 ---
@@ -19,11 +19,13 @@ const footerLinks = heroLinks.filter((l) => l.label !== 'Resume (PDF)');
               >
                 {link.label}
               </a>
-              {link.todo && <span class="todo-chip">TODO</span>}
             </li>
           );
         })
       }
+      <li>
+        <a href={siteSource.href} target="_blank" rel="noopener">{siteSource.label}</a>
+      </li>
     </ul>
   </div>
 </footer>
