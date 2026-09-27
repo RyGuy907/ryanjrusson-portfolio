@@ -1,4 +1,5 @@
 import type { ImageMetadata } from 'astro';
+import astrolabe from '../assets/astrolabe.png';
 import byuLaw from '../assets/byu-law.png';
 import cpeTracker from '../assets/cpe-tracker.png';
 import norhog from '../assets/norhog.png';
@@ -62,8 +63,37 @@ export const projects: Project[] = [
     },
   },
   {
-    id: 'norhog',
+    id: 'astrolabe',
     order: 3,
+    title: 'Astrolabe',
+    context: 'Personal · Live',
+    summary: [
+      'An observing planner for amateur astronomy: given a site and a night, it grades the night for deep-sky and planetary viewing and ranks targets. Grades come from hourly cloud, transparency, seeing, wind, dew and moonlight, and the 12,371-object OpenNGC catalog is filtered by each site’s sky brightness and horizon. An interactive star chart handles star hopping, and a light-pollution map of the lower 48, modeled from 2025 VIIRS satellite data, suggests each site’s Bortle class.',
+      'Twilight and moon times agree with the US Naval Observatory to within a minute on the reference night checked. The Python engine (Skyfield, JPL’s DE440 ephemeris) sits behind a stateless FastAPI service, with sites and history kept in the browser, and deploys through the same GitHub Actions, S3 and SSM pipeline as norhog (04).',
+    ],
+    tags: [
+      'Python',
+      'Skyfield',
+      'FastAPI',
+      'React',
+      'TypeScript',
+      'Canvas',
+      'Leaflet',
+      'SciPy',
+      'GitHub Actions',
+    ],
+    links: [
+      { label: 'Live site', href: 'https://astrolabe.ryanjrusson.com' },
+      { label: 'Source', href: 'https://github.com/RyGuy907/astrolabe' },
+    ],
+    image: {
+      src: astrolabe,
+      alt: 'Astrolabe’s sky chart centered on M13 beside the target list, with the cluster’s survey image and facts',
+    },
+  },
+  {
+    id: 'norhog',
+    order: 4,
     title: 'norhog.com',
     context: 'Personal · Live',
     summary: [
@@ -82,7 +112,7 @@ export const projects: Project[] = [
   },
   {
     id: 'byu-law',
-    order: 4,
+    order: 5,
     title: 'BYU Law School',
     context: 'Professional',
     summary: [
@@ -98,7 +128,7 @@ export const projects: Project[] = [
   },
   {
     id: 'wordle',
-    order: 5,
+    order: 6,
     title: 'Wordle Solver',
     context: 'Self-directed final project · Academic',
     summary: [
